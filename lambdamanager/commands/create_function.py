@@ -1,32 +1,27 @@
-#!/usr/bin/env python
-"""
-    usage: {command} -c configfile.yml create
-"""
 from __future__ import absolute_import, print_function
 
-from pprint import pprint
 import sys
 
-from docopt import docopt
-
-from ..awslambda import AwsLambdaManager, ConfigYamlReader
+from ..basecommand import BaseCommand
 
 
-class CreateFunction:
+class CreateFunction(BaseCommand):
     """create: Create lambda functions in AWS service."""
-    def __init__(self, manager):
-        self.aws_lambda = manager
+
+    command_doc = __doc__
 
     @classmethod
-    def usage(self):
-        """Get the command usage"""
-        return "{0}\n{1}\n".format(self.__doc__, __doc__)
+    def command_usage(self):
+        return(
+"""
+    usage: {command} -c configfile.yml create
+""")
 
     def __call__(self):
-        print(docopt(__doc__))
-        return
+
         if not self.aws_lambda.function_exists():
             self.aws_lambda.create_function()
         else:
             print("The function already exists")
             sys.exit(1)
+        return self.EXIT_OK
