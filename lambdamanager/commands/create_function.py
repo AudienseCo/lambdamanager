@@ -27,11 +27,12 @@ usage: {command} [-c FILE] create [<function_name>]
         if len(args) == 1:
             self.aws_lambda.select_function(args[0])
         elif len(args) == 0:
-            self.aws_lambda.select_function()
-        else:
-            print("There are more than one function in the file, please select"
-                  " one")
-            return self.EXIT_GENERIC_FAILURE
+            if len(self.aws_lambda.available_functions()) > 1:
+                print("There are more than one function in the file, please select"
+                      " one")
+                return self.EXIT_GENERIC_FAILURE
+            else:
+                self.aws_lambda.select_function()
 
         return self.EXIT_OK
 
