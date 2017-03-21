@@ -70,38 +70,61 @@ class AwsLambdaManager:
     def __init__(self, config):
         """
             config = {
-                'FunctionName': 'the_visible_lambda_function_name',
-                'Runtime': 'python2.7',
-                'Role': 'a-iam-role',
-                'Handler': 'module_name.lambda_handler',
-                'Description': 'A function description',  # optional
-                'Code': {
-                   'S3Bucket': 'the-bucket-name-to-upload-releases',
-                   'S3KeyPath': 'route/to/releases/directory',
-                   'Directory': 'path/to/code/directory',
-                },
-                'MemorySize': 128,
-                'Timeout': 120,  # optional
-                'VpcConfig': {  # optional
-                    'SubnetIds': [
-                        'string',
-                    ],
-                    'SecurityGroupIds': [
-                        'string',
-                    ],
-                },
-                'Environment': {  # optional
-                    'Variables': {
-                        'KEY1': 'VALUE1',
-                        'KEY2': 'VALUE2',
-                        'KEY3': 'VALUE3',
-                    }
-                },
+                'the_visible_lambda_function_name': {
+                    'Runtime': 'python2.7',
+                    'Role': 'a-iam-role',
+                    'Handler': 'module_name.lambda_handler',
+                    'Description': 'A function description',  # optional
+                    'Code': {
+                       'S3Bucket': 'the-bucket-name-to-upload-releases',
+                       'S3KeyPath': 'route/to/releases/directory',
+                       'Directory': 'path/to/code/directory',
+                    },
+                    'MemorySize': 128,
+                    'Timeout': 120,  # optional
+                    'VpcConfig': {  # optional
+                        'SubnetIds': [
+                            'string',
+                        ],
+                        'SecurityGroupIds': [
+                            'string',
+                        ],
+                    },
+                    'Environment': {  # optional
+                        'Variables': {
+                            'KEY1': 'VALUE1',
+                            'KEY2': 'VALUE2',
+                            'KEY3': 'VALUE3',
+                        }
+                    },
+                }
             }
         """
         self.config = config
-        self.runtime = AVAILABLE_RUNTIMES[config['Runtime']]
         self.aws_lambda = boto3.client('lambda')
+
+        self.function_selected = None
+        self.function_config = {}
+
+    def available_functions(self):
+        """
+            Return a list of the function names available in the config file
+        """
+        return self.config.keys()
+
+    def select_function(self, name):
+        """
+            Select a function from config file to operate over it
+        """
+        if not name and len(self.available_functions()) == 1:
+            self.function_selected = self.available_functions()[0]
+        elif name in self.available_functions():
+            self.function_selected = name
+        else:
+            raise self.FunctionNotFoundError("The function {0} is not present "
+                                             "in the config file".format(name))
+        self.function_config = self.config[self.function_selected]
+        self.runtime = AVAILABLE_RUNTIMES[self.function_config['Runtime']]
 
     def get_function_configuration(self):
         """
@@ -311,3 +334,6 @@ class AwsLambdaManager:
                 payload is a file.
         """
         raise NotImplementedError()
+
+    class FunctionNotFoundError(Exception):
+        pass

@@ -11,7 +11,7 @@ class ConfigYamlReader:
     # Config is in yaml format
     def __init__(self, configfile):
         """
-            FunctionName: the_visible_lambda_function_name
+        the_visible_lambda_function_name:
             Runtime: python2.7
             Role: a-iam-role
             Handler: module_name.lambda_handler
@@ -37,11 +37,11 @@ class ConfigYamlReader:
         with open(self.configfile, 'r') as f:
             self.config = yaml.load(f)
 
-
-    def function_properties_check(self):
+    def configfile_check(self):
         """
         Check the schema
         """
-        assert 'Runtime' in self.config, ConfigException('Runtime is not defined')
-        assert self.config['Runtime'] in AVAILABLE_RUNTIMES, ConfigException('Runtime not available')
+        for (f, fconf) in self.config.items():
+            assert 'Runtime' in fconf, ConfigException('Runtime is not defined')
+            assert fconf['Runtime'] in AVAILABLE_RUNTIMES, ConfigException('Runtime not available')
 

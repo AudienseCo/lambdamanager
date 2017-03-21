@@ -2,7 +2,7 @@
 Usage: {command} [-c FILE] <command> [<args>...]
 
 -h --help           show this
--c --config FILE    The function config file [default: ./functions.yml ]
+-c --config FILE    The function config file [default: ./functions.yml]
 
 These are the available commands:
 {commands}
@@ -57,9 +57,9 @@ class LambdaManagerCommand:
             exit(1)
 
         self.config = ConfigYamlReader(self.arguments['--config'])
-        self.config.function_properties_check()
+        self.config.configfile_check()
 
         self.aws_lambda = AwsLambdaManager(self.config.config)
 
         command = self.commands[command](self.aws_lambda)
-        exit(command() or 0)
+        exit(command(*self.arguments['<args>']) or 0)
