@@ -112,7 +112,7 @@ class AwsLambdaManager:
         """
         return self.config.keys()
 
-    def select_function(self, name):
+    def select_function(self, name=None):
         """
             Select a function from config file to operate over it
         """
@@ -132,9 +132,8 @@ class AwsLambdaManager:
         """
         # Set required properties
         function_definition = {
-            key: self.config[key]
+            key: self.function_config[key]
             for key in (
-                'FunctionName',
                 'Runtime',
                 'Role',
                 'Handler',
@@ -144,14 +143,14 @@ class AwsLambdaManager:
 
         # Set optional properties
         function_definition.update({
-            key: self.config[key]
+            key: self.function_config[key]
             for key in (
                 'Environment',
                 'Description',
                 'Timeout',
                 'VpcConfig',
             )
-            if self.config.get(key)
+            if self.function_config.get(key)
         })
 
         return function_definition
@@ -174,9 +173,9 @@ class AwsLambdaManager:
     def upload_package(self, filename=None):
         """ Upload the package to S3 """
         logger.info("Uploading the package to S3")
-        s3f = S3FunctionUploader(self.config['Code']['S3Bucket'])
+        s3f = S3FunctionUploader(self.function_config['Code']['S3Bucket'])
         self.s3_filename = path.join(
-            self.config['Code']['S3KeyPath'],
+            self.function_config['Code']['S3KeyPath'],
             path.basename(filename or self.local_filename)
         )
         s3f.upload(filename or self.local_filename,
@@ -187,8 +186,8 @@ class AwsLambdaManager:
         """ Create a function in aws lambda """
         logger.info("Preparing stuf to create function")
         self.create_package(
-            self.config['Code']['Directory'],
-            self.config['FunctionName'],
+            self.function_config['Code']['Directory'],
+            self.function_selected,
             'devel'
         )
 
@@ -198,7 +197,7 @@ class AwsLambdaManager:
 
         # Set the first release Code block
         function_definition['Code'] = {
-            'S3Bucket': self.config['Code']['S3Bucket'],
+            'S3Bucket': self.function_config['Code']['S3Bucket'],
             'S3Key': self.s3_filename,
         }
 
@@ -213,7 +212,7 @@ class AwsLambdaManager:
         """
         try:
             self.aws_lambda.get_function(
-                FunctionName=self.config['FunctionName']
+                FunctionName=self.function_selected
             )
             return True
         except self.aws_lambda.exceptions.ResourceNotFoundException:
@@ -224,8 +223,8 @@ class AwsLambdaManager:
             publish version in lambda with alias "tag"
         """
         self.create_package(
-            self.config['Code']['Directory'],
-            self.config['FunctionName']
+            self.function_config['Code']['Directory'],
+            self.function_selected
         )
 
         self.upload_package()
@@ -233,8 +232,8 @@ class AwsLambdaManager:
         logger.info("Creating release {0}".format(self.hash_release))
 
         response_code = self.aws_lambda.update_function_code(
-            FunctionName=self.config['FunctionName'],
-            S3Bucket=self.config['Code']['S3Bucket'],
+            FunctionName=self.function_selected,
+            S3Bucket=self.function_config['Code']['S3Bucket'],
             S3Key=self.s3_filename,
             Publish=True
         )
@@ -251,7 +250,7 @@ class AwsLambdaManager:
     def update_or_create_alias(self, version, alias):
         try:
             self.aws_lambda.update_alias(
-                FunctionName=self.config['FunctionName'],
+                FunctionName=self.function_selected,
                 FunctionVersion=version,
                 Name=alias)
             logger.info("Alias '{0}' updated for version '{1}'".format(
@@ -259,7 +258,7 @@ class AwsLambdaManager:
             ))
         except self.aws_lambda.exceptions.ResourceNotFoundException:
             self.aws_lambda.create_alias(
-                FunctionName=self.config['FunctionName'],
+                FunctionName=self.function_selected,
                 FunctionVersion=version,
                 Name=alias
             )
@@ -282,7 +281,7 @@ class AwsLambdaManager:
     def list_aliases(self):
         logger.info("Listing aliases")
         response = self.aws_lambda.list_aliases(
-            FunctionName=self.config['FunctionName'],
+            FunctionName=self.function_selected,
             MaxItems=500
 
         )
@@ -299,14 +298,14 @@ class AwsLambdaManager:
         else:
             try:
                 response = self.aws_lambda.get_alias(
-                    FunctionName=self.config['FunctionName'],
+                    FunctionName=self.function_selected,
                     Name=release
                 )
                 version = response['FunctionVersion']
             except self.aws_lambda.exceptions.ResourceNotFoundException:
                 logger.error("Can't found the qualifier {0} for {1}".format(
                     release,
-                    self.config['FunctionName']
+                    self.function_selected
                 ))
                 return
 
@@ -318,7 +317,7 @@ class AwsLambdaManager:
                 payload is a file.
         """
         response =  self.aws_lambda.invoke(
-            FunctionName=self.config['FunctionName'],
+            FunctionName=self.function_selected,
             InvocationType='RequestResponse',
             LogType='Tail',
             Payload=payload or bytes(''),
