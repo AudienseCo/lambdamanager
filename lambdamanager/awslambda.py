@@ -157,18 +157,22 @@ class AwsLambdaManager:
 
         return function_definition
 
-    def create_package(self, directory, package_name, release_tag=''):
+    def create_package(self, release_tag=''):
         """ Create a temporary zip package"""
 
+        code_directory = self.function_config['Code']['Directory']
+        package_name = self.function_selected
         hash_release = _get_git_release()
         logger.info("Creating package with git release {0}".format(hash_release))
 
-        lp = LambdaPackage(package_name,
-                           hash_release + release_tag,
-                           directory,
-                           target_directory='.')
-        lp.add_pyfiles()
-        lp.save()
+        lp = self.runtime['packager'](
+            package_name,
+            hash_release + release_tag,
+            code_directory,
+            target_directory='.')
+
+        lp.build_and_save()
+
         self.hash_release = hash_release
         self.local_filename = lp.filename
 
@@ -187,11 +191,7 @@ class AwsLambdaManager:
     def create_function(self):
         """ Create a function in aws lambda """
         logger.info("Preparing stuf to create function")
-        self.create_package(
-            self.function_config['Code']['Directory'],
-            self.function_selected,
-            'devel'
-        )
+        self.create_package('devel')
 
         self.upload_package()
 
@@ -224,10 +224,7 @@ class AwsLambdaManager:
         """
             publish version in lambda with alias "tag"
         """
-        self.create_package(
-            self.function_config['Code']['Directory'],
-            self.function_selected
-        )
+        self.create_package(alias)
 
         self.upload_package()
 
