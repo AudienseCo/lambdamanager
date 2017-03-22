@@ -28,26 +28,16 @@ usage: {command} [-c FILE] create_release [<function_name>] [<release_alias>]
         function_name = None
 
         if len(args) == 2:
-            alias = self.args[0]
-            function_name = self.args[1]
+            alias = self.args[1]
+            function_name = self.args[0]
         elif len(args) == 1:
             alias = self.args[0]
 
-        if not function_name:
-            if len(self.aws_lambda.available_functions()) > 1:
-                print("There are more than one function in the file, please select"
-                      " one")
-                return self.EXIT_GENERIC_FAILURE
-            else:
-                self.aws_lambda.select_function()
-
-        else:
-            self.aws_lambda.select_function(function_name)
-
-
+        self.select_function(function_name)
 
         if self.aws_lambda.function_exists():
-            return(self.aws_lambda.create_release(self.alias))
+            response = self.aws_lambda.create_release(self.alias)
+
         else:
             print("Lambda function not found")
             sys.exit(1)
