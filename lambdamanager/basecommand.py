@@ -1,9 +1,15 @@
+import sys
+from os import path
 
 class BaseCommand(object):
 
     command_doc = __doc__
     EXIT_OK = 0
     EXIT_GENERIC_FAILURE = 1
+
+    subcommand_name = 'base'
+    extra_args = ''
+    extra_args_body = ''
 
     def __init__(self, manager):
         self.aws_lambda = manager
@@ -15,9 +21,20 @@ class BaseCommand(object):
 
     @classmethod
     def command_usage(self):
-        """Get the command usage"""
-        raise NotImplementedException()
+        return """
+Usage: {command} [-c CONFIGFILE] {subcommand} [<function_name>] {extra_args}
 
+    If there are more than one function in configfile.yml, then
+    function_name is mandatory
+
+-h --help           show this
+-c CONFIGFILE, --config=CONFIGFILE    The function config file [default: ./functions.yml]
+{extra_args_body}
+""".format(
+            command=path.basename(sys.argv[0]),
+            subcommand=self.subcommand_name,
+            extra_args=self.extra_args,
+            extra_args_body=self.extra_args_body)
 
     def select_function(self, function_name):
         """A simple helper to select the current function"""
@@ -33,5 +50,5 @@ class BaseCommand(object):
         else:
             self.aws_lambda.select_function(function_name)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, arguments):
         raise NotImplementedException()

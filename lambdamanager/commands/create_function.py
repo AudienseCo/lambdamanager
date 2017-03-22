@@ -7,29 +7,13 @@ from ..basecommand import BaseCommand
 
 
 class CreateFunction(BaseCommand):
-    """create: Create lambda functions in AWS service."""
+    """ create: Create lambda functions in AWS service."""
 
-    command_doc = __doc__
+    subcommand_name = 'create'
 
-    @classmethod
-    def command_usage(self):
-        return(
-"""
-usage: {command} [-c FILE] create [<function_name>]
+    def __call__(self, arguments):
 
-        If there are more than one function in configfile.yml, then
-            function_name is mandatory
-
-""")
-
-    def __call__(self, *args, **kwargs):
-
-        function_name = None
-        if len(args) == 1:
-            function_name = args[0]
-
-        self.select_function(function_name)
-
+        print(self.aws_lambda.function_selected)
         return self.EXIT_OK
 
         if not self.aws_lambda.function_exists():
