@@ -50,5 +50,10 @@ Usage: {command} [-c CONFIGFILE] {subcommand} [<function_name>] {extra_args}
         else:
             self.aws_lambda.select_function(function_name)
 
+    def function_must_exists(self):
+        if not self.aws_lambda.function_exists():
+            print("Lambda function not found")
+            exit(self.EXIT_GENERIC_FAILURE)
+
     def __call__(self, arguments):
         raise NotImplementedException()

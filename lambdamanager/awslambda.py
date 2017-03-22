@@ -153,6 +153,8 @@ class AwsLambdaManager:
             if self.function_config.get(key)
         })
 
+        function_definition['FunctionName'] = self.function_selected
+
         return function_definition
 
     def create_package(self, directory, package_name, release_tag=''):

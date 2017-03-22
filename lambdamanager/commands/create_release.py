@@ -17,9 +17,6 @@ class CreateFunctionRelease(BaseCommand):
 
         alias = arguments['<release_alias>'] or 'devel'
 
-        if self.aws_lambda.function_exists():
-            response = self.aws_lambda.create_release(alias)
+        self.function_must_exists()
 
-        else:
-            print("Lambda function not found")
-            exit(self.EXIT_GENERIC_FAILURE)
+        response = self.aws_lambda.create_release(alias)

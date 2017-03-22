@@ -13,9 +13,7 @@ class ListFunctionAliases(BaseCommand):
 
     def __call__(self, arguments):
 
-        if not self.aws_lambda.function_exists():
-            print("The function doesn't exist")
-            sys.exit(self.EXIT_GENERIC_FAILURE)
+        self.function_must_exists()
 
         aliases = self.aws_lambda.list_aliases()
         for item in aliases['Aliases']:

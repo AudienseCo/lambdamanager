@@ -24,9 +24,8 @@ class InvokeFunction(BaseCommand):
 
     def __call__(self, arguments):
 
-        if not self.aws_lambda.function_exists():
-            print("Lambda function does not exists")
-            exit(1)
+        self.function_must_exists()
+
         qualifier = arguments['--qualifier']
         payload_filename = arguments['--payload']
 
