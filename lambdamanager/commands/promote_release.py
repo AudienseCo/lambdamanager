@@ -4,6 +4,7 @@ from ..basecommand import BaseCommand
 
 from pprint import pprint
 
+
 class PromoteFunctionRelease(BaseCommand):
     """ promote_release: Update the alias named 'production' """
 

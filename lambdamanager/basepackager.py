@@ -9,6 +9,7 @@ import re
 class BasePackager(object):
 
     file_extensions = []
+
     def __init__(self, package_name, release, source_directory,
                  target_directory='.'):
 
@@ -61,7 +62,10 @@ class BasePackager(object):
         os.chdir(self.tmpdir)
 
         for (current_dir, directories, files) in os.walk('.', topdown=False):
-            valid_files = filter(lambda f: re.search('({})$'.format('|'.join(self.file_extensions)), f), files)
+            valid_files = filter(lambda f:
+                                 re.search('({})$'.format(
+                                     '|'.join(self.file_extensions)), f),
+                                 files)
             for valid_file in valid_files:
                 self.zipf.write(path.join(current_dir, valid_file))
 

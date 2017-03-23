@@ -9,6 +9,7 @@ class ConfigException(AssertionError):
 
 class ConfigYamlReader:
     # Config is in yaml format
+
     def __init__(self, configfile):
         """
         the_visible_lambda_function_name:
@@ -42,6 +43,9 @@ class ConfigYamlReader:
         Check the schema
         """
         for (f, fconf) in self.config.items():
-            assert 'Runtime' in fconf, ConfigException('Runtime is not defined')
-            assert fconf['Runtime'] in AVAILABLE_RUNTIMES, ConfigException('Runtime not available')
-
+            assert 'Runtime' in fconf, ConfigException(
+                'Runtime is not defined'
+            )
+            assert fconf['Runtime'] in AVAILABLE_RUNTIMES, ConfigException(
+                'Runtime not available'
+            )

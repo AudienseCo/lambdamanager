@@ -1,13 +1,10 @@
 from __future__ import absolute_import, print_function
 
-import sys
-from os import path
-
 from ..basecommand import BaseCommand
 
 
 class CreateFunctionRelease(BaseCommand):
-    """ create_release: Create a new release for the selected lambda function"""
+    """ create_release: Create a release for the selected lambda function"""
 
     subcommand_name = 'create_release'
     extra_args = '[<release_alias>]'
@@ -19,4 +16,4 @@ class CreateFunctionRelease(BaseCommand):
 
         self.function_must_exists()
 
-        response = self.aws_lambda.create_release(alias)
+        self.aws_lambda.create_release(alias)

@@ -1,6 +1,7 @@
 import sys
 from os import path
 
+
 class BaseCommand(object):
 
     command_doc = __doc__
@@ -56,4 +57,4 @@ Usage: {command} [-c CONFIGFILE] {subcommand} [<function_name>] {extra_args}
             exit(self.EXIT_GENERIC_FAILURE)
 
     def __call__(self, arguments):
-        raise NotImplementedException()
+        raise NotImplementedError()

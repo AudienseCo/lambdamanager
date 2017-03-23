@@ -26,7 +26,8 @@ from .configreader import ConfigYamlReader
 def _doc_help():
     return __doc__.format(
         command=path.basename(sys.argv[0]),
-        commands='\n'.join([cmd.__doc__ for cmd in AVAILABLE_COMMANDS_HANDLERS]),
+        commands='\n'.join([cmd.__doc__
+                            for cmd in AVAILABLE_COMMANDS_HANDLERS]),
     )
 
 
