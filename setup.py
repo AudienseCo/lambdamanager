@@ -52,6 +52,8 @@ setup(
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
+    zip_safe=False,
+
     install_requires=[
         'boto3',
         'docopt',
