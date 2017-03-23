@@ -116,8 +116,18 @@ class AwsLambdaManager:
         """
             Select a function from config file to operate over it
         """
-        if not name and len(self.available_functions()) == 1:
-            self.function_selected = self.available_functions()[0]
+        if not name:
+            if len(self.available_functions()) > 1:
+                raise self.MultipleFunctionsFoundError(
+                    "Multiple functions found in the config file, please select"
+                    " one"
+                )
+            elif len(self.available_functions()) == 1:
+                self.function_selected = self.available_functions()[0]
+            else:
+                raise self.FunctionNotFoundError(
+                    "No function present is not present in the config file"
+                )
         elif name in self.available_functions():
             self.function_selected = name
         else:
@@ -334,4 +344,7 @@ class AwsLambdaManager:
         raise NotImplementedError()
 
     class FunctionNotFoundError(Exception):
+        pass
+
+    class MultipleFunctionsFoundError(Exception):
         pass
