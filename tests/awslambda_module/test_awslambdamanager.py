@@ -19,9 +19,9 @@ FUNCTION_EXAMPLE = {
     'Handler': 'module_name.lambda_handler',
     'Description': 'A function description',  # optional
     'Code': {
-       'S3Bucket': 'the-bucket-name-to-upload-releases',
-       'S3KeyPath': 'route/to/releases/directory',
-       'Directory': 'path/to/code/directory',
+        'S3Bucket': 'the-bucket-name-to-upload-releases',
+        'S3KeyPath': 'route/to/releases/directory',
+        'Directory': 'path/to/code/directory',
     },
     'MemorySize': 128,
     'Timeout': 120,  # optional
@@ -51,7 +51,8 @@ AWS_LAMBDA_CONFIG_FUNCTIONS = {
     'function-two': FUNCTION_EXAMPLE,
 }
 
-FUNCTION_ONE_PATH = path.join(path.dirname(path.dirname(__file__)), 'assets/function_sample')
+FUNCTION_ONE_PATH = path.join(path.dirname(path.dirname(__file__)),
+                              'assets/function_sample')
 
 with open(path.join(FUNCTION_ONE_PATH, 'functions.yml'), 'r') as config_file:
     FUNCTION_ONE_CONFIG = yaml.load(config_file)

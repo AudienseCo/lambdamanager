@@ -76,11 +76,13 @@ def lambda_handler(event, context):
     logger.debug(str(context))
     return TimestampWritterHandler(event, context)()
 
+
 def other_handler(event, context):
     logger.info('Handler other_handler called')
     logger.debug(str(event))
     logger.debug(str(context))
     return TimestampWritterHandler(event, context)()
+
 
 if __name__ == "__main__":
     """This emulate a lambda handler call in a local system"""
