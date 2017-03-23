@@ -12,8 +12,12 @@ try:
     long_description = long_description.replace("\r","")
 except:
     print("Pypandoc not found. Long_description conversion failure.")
-    with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = f.read()
+    try:
+        with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+            long_description = f.read()
+    except IOError:
+        # sad ...
+        long_description=''
 
 setup(
     name='lambdamanager',
