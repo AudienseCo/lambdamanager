@@ -1,5 +1,11 @@
 from copy import deepcopy
+import yaml
+from os import path
+import os
+from shutil import copytree, rmtree
+from tempfile import mkdtemp
 
+from git import Repo
 from moto import mock_lambda
 import pytest
 
@@ -44,6 +50,12 @@ AWS_LAMBDA_CONFIG_FUNCTIONS = {
     'function-two': FUNCTION_EXAMPLE,
 }
 
+FUNCTION_ONE_PATH = path.join(path.dirname(path.dirname(__file__)), 'assets/function_sample')
+
+with open(path.join(FUNCTION_ONE_PATH, 'functions.yml'), 'r') as config_file:
+    FUNCTION_ONE_CONFIG = yaml.load(config_file)
+
+
 @mock_lambda
 def test_awslambda_init():
     config = {}
@@ -59,12 +71,14 @@ def test_awslambda_init_config():
 
     assert alm.config == AWS_LAMBDA_CONFIG_ONE_FUNCTION
 
+
 @mock_lambda
 def test_awslambda_available_functions():
 
     alm = AwsLambdaManager(AWS_LAMBDA_CONFIG_ONE_FUNCTION)
 
     assert 'function-one' in alm.available_functions()
+
 
 @mock_lambda
 def test_awslambda_select_function_default():
@@ -74,6 +88,7 @@ def test_awslambda_select_function_default():
     alm.select_function()
 
     assert alm.function_selected == 'function-one'
+
 
 @mock_lambda
 def test_awslambda_select_function_from_multiple():
@@ -89,6 +104,7 @@ def test_awslambda_select_function_from_multiple():
     with pytest.raises(AwsLambdaManager.FunctionNotFoundError):
         alm.select_function('not-valid-function')
 
+
 @mock_lambda
 def test_awslambda_get_function_configuration_ok():
 
@@ -103,6 +119,7 @@ def test_awslambda_get_function_configuration_ok():
     # Check not required keys are present:
     for key in ('Environment', 'Description', 'Timeout', 'VpcConfig'):
         assert key in function_config
+
 
 @mock_lambda
 def test_awslambda_get_function_configuration_mininal():
@@ -122,3 +139,27 @@ def test_awslambda_get_function_configuration_mininal():
     # Check not required keys are not present:
     for key in ('Environment', 'Description', 'Timeout', 'VpcConfig'):
         assert key not in function_config
+
+
+@mock_lambda
+def test_awslambda_create_package_config_ok():
+
+    tmpdir = mkdtemp(prefix='lambdamanagertest')
+    function_basename = path.basename(FUNCTION_ONE_PATH)
+    copytree(FUNCTION_ONE_PATH, path.join(tmpdir, function_basename))
+    oldpwd = os.getcwd()
+    os.chdir(path.join(tmpdir, function_basename))
+
+    tmprepo = Repo.init('.')
+    open('GIT_FILE', 'w').close()
+    tmprepo.index.add(['GIT_FILE'])
+    tmprepo.index.commit('sad initial commit')
+
+    alm = AwsLambdaManager(FUNCTION_ONE_CONFIG)
+    alm.select_function('function-one')
+    alm.create_package(release_tag='test')
+
+    path.isfile(alm.local_filename)
+
+    os.chdir(oldpwd)
+    rmtree(tmpdir)

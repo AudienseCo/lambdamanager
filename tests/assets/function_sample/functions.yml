@@ -1,0 +1,43 @@
+---
+function-one:
+  Runtime: python2.7
+  Role: arn:aws:iam::000000000000:role/lambda_basic_execution
+  Handler: function_one.lambda_handler
+  Description: A function example for tests
+  Code:
+     S3Bucket: bucket_with_code
+     S3KeyPath: function_one
+     Directory: function_one
+  MemorySize: 128
+  Timeout: 30 
+  VpcConfig:
+      SubnetIds:
+          - subnet-0000000
+      SecurityGroupIds:
+          - sg-00000000
+  Environment:
+    Variables:
+      S3_BUCKET: writable_bucket
+      S3_FILENAME: example/timestamp
+
+function-other:
+  Runtime: python2.7
+  Role: arn:aws:iam::000000000000:role/lambda_basic_execution
+  # Only the handler change, the code package is still the same
+  Handler: function_one.other_handler
+  Description: A function example for tests
+  Code:
+     S3Bucket: bucket_with_code
+     S3KeyPath: function_one
+     Directory: function_one
+  MemorySize: 128
+  Timeout: 30 
+  VpcConfig:
+      SubnetIds:
+          - subnet-0000000
+      SecurityGroupIds:
+          - sg-00000000
+  Environment:
+    Variables:
+      S3_BUCKET: writable_bucket
+      S3_FILENAME: example/timestamp
