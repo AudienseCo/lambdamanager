@@ -9,7 +9,7 @@ here = path.abspath(path.dirname(__file__))
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-    long_description = long_description.replace("\r","")
+    long_description = long_description.replace("\r", "")
 except:
     print("Pypandoc not found. Long_description conversion failure.")
     try:
@@ -17,7 +17,7 @@ except:
             long_description = f.read()
     except IOError:
         # sad ...
-        long_description=''
+        long_description = ''
 
 setup(
     name='lambdamanager',
@@ -65,11 +65,11 @@ setup(
         'PyYAML',
     ],
 
-    setup_requires = [
+    setup_requires=[
         'pytest-runner',
     ],
 
-    tests_require = [
+    tests_require=[
         'moto',
         'pytest',
         'pytest-cov',
