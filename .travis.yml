@@ -3,6 +3,10 @@
 
 language: python
 
+addons:
+  apt:
+    packages:
+      - pandoc
 env:
   - TOXENV=py27
   - TOXENV=py33
