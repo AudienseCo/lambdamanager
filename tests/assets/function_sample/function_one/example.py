@@ -13,9 +13,6 @@ import sys
 
 import boto3
 
-# The requirements tester
-from pyramid.view import view_config
-
 
 logger = logging.getLogger('TimestampWritter')
 
