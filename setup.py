@@ -59,10 +59,18 @@ setup(
         'PyYAML',
     ],
 
+    setup_requires = [
+        'pytest-runner',
+    ],
+
+    tests_require = [
+        'moto',
+        'pytest',
+        'pytest-cov',
+    ],
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['coverage'],
         'build': ['pypandoc'],
     },
 
