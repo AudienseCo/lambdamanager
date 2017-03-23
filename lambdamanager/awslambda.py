@@ -195,7 +195,6 @@ class AwsLambdaManager:
         s3f.upload(filename or self.local_filename,
                    self.s3_filename)
 
-
     def create_function(self):
         """ Create a function in aws lambda """
         logger.info("Preparing stuf to create function")
@@ -252,7 +251,6 @@ class AwsLambdaManager:
 
         logger.info("If config wash changed, remember to update function "
                     "configuration")
-
 
     def update_or_create_alias(self, version, alias):
         try:
@@ -323,7 +321,7 @@ class AwsLambdaManager:
             Call in sync mode to the function
                 payload is a file.
         """
-        response =  self.aws_lambda.invoke(
+        response = self.aws_lambda.invoke(
             FunctionName=self.function_selected,
             InvocationType='RequestResponse',
             LogType='Tail',
