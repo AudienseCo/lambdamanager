@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from moto import mock_lambda
 import pytest
 
@@ -86,3 +88,37 @@ def test_awslambda_select_function_from_multiple():
 
     with pytest.raises(AwsLambdaManager.FunctionNotFoundError):
         alm.select_function('not-valid-function')
+
+@mock_lambda
+def test_awslambda_get_function_configuration_ok():
+
+    alm = AwsLambdaManager(AWS_LAMBDA_CONFIG_ONE_FUNCTION)
+    alm.select_function()
+
+    function_config = alm.get_function_configuration()
+    # Check required keys are present:
+    for key in ('FunctionName', 'Runtime', 'Role', 'Handler', 'MemorySize'):
+        assert key in function_config
+
+    # Check not required keys are present:
+    for key in ('Environment', 'Description', 'Timeout', 'VpcConfig'):
+        assert key in function_config
+
+@mock_lambda
+def test_awslambda_get_function_configuration_mininal():
+
+    config = deepcopy(FUNCTION_EXAMPLE)
+    for key in ('Environment', 'Description', 'Timeout', 'VpcConfig'):
+        del config[key]
+
+    alm = AwsLambdaManager({'function-one': config})
+    alm.select_function()
+
+    function_config = alm.get_function_configuration()
+    # Check required keys are present:
+    for key in ('FunctionName', 'Runtime', 'Role', 'Handler', 'MemorySize'):
+        assert key in function_config
+
+    # Check not required keys are not present:
+    for key in ('Environment', 'Description', 'Timeout', 'VpcConfig'):
+        assert key not in function_config
