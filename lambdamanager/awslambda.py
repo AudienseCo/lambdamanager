@@ -7,9 +7,7 @@ from os import path
 
 from git import Repo
 import boto3
-import yaml
 
-from .configreader import ConfigYamlReader, ConfigException
 from .runtimes import AVAILABLE_RUNTIMES
 
 
@@ -25,7 +23,7 @@ def _get_git_release(repo_dir='.'):
         # Changes not stashed
         hash_name += 'm'
     try:
-        if len(repo.index.diff(HEAD)) > 0:
+        if len(repo.index.diff('HEAD')) > 0:
             # Changes added to next commit
             hash_name += 'h'
     except:
