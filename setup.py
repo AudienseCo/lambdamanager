@@ -73,10 +73,11 @@ setup(
         'moto',
         'pytest',
         'pytest-cov',
+        'pytest-env',
+        'check-manifest',
     ],
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['check-manifest'],
         'build': ['pypandoc'],
     },
 

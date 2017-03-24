@@ -13,6 +13,9 @@ import pytest
 from lambdamanager.awslambda import AwsLambdaManager
 
 
+boto3.setup_default_session(region_name='us-west-1')
+
+
 FUNCTION_EXAMPLE = {
     'Runtime': 'python2.7',
     'Role': 'a-iam-role',
