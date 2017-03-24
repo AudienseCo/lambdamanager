@@ -121,7 +121,8 @@ class AwsLambdaManager:
                     " one"
                 )
             elif len(self.available_functions()) == 1:
-                self.function_selected = self.available_functions()[0]
+                # Take the first, the only one element
+                self.function_selected = next(iter(self.available_functions()))
             else:
                 raise self.FunctionNotFoundError(
                     "No function present is not present in the config file"
