@@ -86,4 +86,4 @@ def other_handler(event, context):
 
 if __name__ == "__main__":
     """This emulate a lambda handler call in a local system"""
-    print TimestampWritterHandler(object(), {})()
+    print(TimestampWritterHandler(object(), {})())
