@@ -6,6 +6,10 @@ language: python
 addons:
   apt:
     packages:
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+      - texlive-latex-recommended
       - pandoc
 env:
   - TOXENV=py27
@@ -14,7 +18,9 @@ env:
 
 install: pip install tox
 
-script: tox
+script: 
+  - pandoc -v || True
+  - tox
 
 notifications:
   email: false
