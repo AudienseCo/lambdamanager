@@ -3,9 +3,11 @@
 A command to help you to manage aws lambda functions.
 
 These aws lambda runtimes are supported by now:
-  - python2.7
 
-[![Build Status](https://travis-ci.org/AudienseCo/lambdamanager.svg?branch=master)](https://travis-ci.org/AudienseCo/lambdamanager)
++ python2.7
+
+![](https://travis-ci.org/AudienseCo/lambdamanager.svg?branch=master)
+
 
 ## Installation
 
