@@ -4,20 +4,16 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the README file
 
+# Get the long description from the README file
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
     long_description = long_description.replace("\r", "")
 except:
     print("Pypandoc not found. Long_description conversion failure.")
-    try:
-        with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-            long_description = f.read()
-    except IOError:
-        # sad ...
-        long_description = ''
+    long_description = ''
+
 
 setup(
     name='lambdamanager',
