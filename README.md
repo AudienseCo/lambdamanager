@@ -5,14 +5,14 @@ A command to help you to manage aws lambda functions.
 These aws lambda runtimes are supported by now:
   - python2.7
 
-[![Build Status](https://travis-ci.org/ant30/lambdamanager.svg?branch=master)](https://travis-ci.org/ant30/lambdamanager)
+[![Build Status](https://travis-ci.org/AudienseCo/lambdamanager.svg?branch=master)](https://travis-ci.org/AudienseCo/lambdamanager)
 
 ## Installation
 
 Using pip:
 
 ```
-pip install git+https://github.com/ant30/lambdamanager
+pip install git+https://github.com/AudienseCo/lambdamanager
 ```
 
 *This package is going to be published in pypi. By now, use this install method.*
@@ -24,7 +24,7 @@ pip install git+https://github.com/ant30/lambdamanager
 Using pip:
 
 ```
-pip install --upgrade git+https://github.com/ant30/lambdamanager
+pip install --upgrade git+https://github.com/AudienseCo/lambdamanager
 ```
 
 ## AWS Credentials setup
@@ -37,7 +37,7 @@ We need to create the function setup definition. The default name used by the co
 
 ### The functions.yml file structure
 
-This is a example with only one function, based on the [function_sample](https://github.com/ant30/lambdamanager/tree/master/tests/assets/function_sample) in tests directory. The file use yaml format.
+This is a example with only one function, based on the [function_sample](https://github.com/AudienseCo/lambdamanager/tree/master/tests/assets/function_sample) in tests directory. The file use yaml format.
 
 ```YAML
 ---
